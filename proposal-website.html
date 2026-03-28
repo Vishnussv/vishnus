@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Will You Marry Me? 💍</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cinzel:wght@400;600&family=Josefin+Sans:wght@200;300;400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --cream: #fdf6ee;
+  --blush: #f2c4c4;
+  --rose: #c0596b;
+  --deep-rose: #8b1a2a;
+  --gold: #c9a96e;
+  --dark-gold: #9a7440;
+  --ink: #1c1008;
+  --warm-dark: #0e0906;
+}
+
+html { scroll-behavior: smooth; scroll-snap-type: y mandatory; }
+body {
+  font-family: 'Josefin Sans', sans-serif;
+  background: var(--warm-dark);
+  color: var(--cream);
+  overflow-x: hidden;
+  cursor: none;
+}
+
+/* ── CURSOR ── */
+.cur { position:fixed; pointer-events:none; z-index:9999; transform:translate(-50%,-50%); }
+#cur1 { width:40px;height:40px;border:1px solid rgba(201,169,110,0.6);border-radius:50%;transition:transform .2s; }
+#cur2 { width:6px;height:6px;background:var(--gold);border-radius:50%; }
+
+/* ── PETALS ── */
+#petals { position:fixed;inset:0;pointer-events:none;z-index:10;overflow:hidden; }
+.petal {
+  position:absolute;top:-60px;
+  font-size:var(--s,1.2rem);
+  opacity:.7;
+  animation: petalFall var(--d,8s) linear var(--delay,0s) infinite;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,.3));
+}
+@keyframes petalFall {
+  0%   { transform: translateY(-60px) rotate(0deg) translateX(0); opacity:.8; }
+  50%  { transform: translateY(50vh) rotate(180deg) translateX(var(--sway,30px)); }
+  100% { transform: translateY(105vh) rotate(360deg) translateX(0); opacity:0; }
+}
+
+/* ══════════════════════
+   SECTION 1 — TITLE
+══════════════════════ */
+#s1 {
+  height: 100vh;
+  scroll-snap-align: start;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  position: relative; overflow: hidden;
+  background: radial-gradient(ellipse at 50% 60%, #2a0a10 0%, #0e0906 65%);
+}
+
+.candle-row {
+  display: flex; gap: 3rem; margin-bottom: 3rem; opacity: 0;
+  animation: fadeUp 1.2s ease 0.3s forwards;
+}
+.candle { font-size: 2.5rem; animation: flicker 1.5s ease-in-out infinite; }
+.candle:nth-child(2) { animation-delay:.3s; font-size:3.5rem; }
+.candle:nth-child(3) { animation-delay:.6s; }
+@keyframes flicker { 0%,100%{transform:scaleY(1) rotate(-1deg)} 50%{transform:scaleY(1.08) rotate(1deg)} }
+
+.s1-tag {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: clamp(.65rem, 1.5vw, .8rem);
+  letter-spacing: .45em;
+  text-transform: uppercase;
+  color: var(--gold);
+  opacity: 0;
+  animation: fadeUp 1s ease .7s forwards;
+  margin-bottom: 1.5rem;
+}
+
+.s1-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(3.5rem, 11vw, 9rem);
+  font-weight: 300;
+  font-style: italic;
+  color: var(--cream);
+  line-height: 1;
+  text-align: center;
+  opacity: 0;
+  animation: fadeUp 1.2s ease 1s forwards;
+  position: relative;
+}
+.s1-title span {
+  color: var(--blush);
+  display: block;
+  font-size: clamp(2rem, 6vw, 5rem);
+  font-style: normal;
+  font-weight: 300;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  margin-bottom: .5rem;
+}
+
+.divider {
+  width: 120px; height: 1px;
+  background: linear-gradient(to right, transparent, var(--gold), transparent);
+  margin: 2rem auto;
+  opacity: 0;
+  animation: fadeUp 1s ease 1.5s forwards;
+}
+
+.s1-sub {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1rem, 2.5vw, 1.4rem);
+  font-style: italic;
+  color: rgba(253,246,238,.6);
+  letter-spacing: .08em;
+  text-align: center;
+  opacity: 0;
+  animation: fadeUp 1s ease 1.8s forwards;
+}
+
+.scroll-cue {
+  position:absolute; bottom:2.5rem;
+  display:flex;flex-direction:column;align-items:center;gap:.5rem;
+  opacity:0; animation: fadeUp 1s ease 2.5s forwards;
+}
+.scroll-cue span { font-size:.65rem; letter-spacing:.3em; text-transform:uppercase; color:rgba(201,169,110,.5); }
+.scroll-arrow { width:1px;height:50px;background:linear-gradient(to bottom,var(--gold),transparent);animation:scrollPulse 2s ease-in-out infinite; }
+@keyframes scrollPulse { 0%,100%{opacity:.3;transform:scaleY(.8)} 50%{opacity:1;transform:scaleY(1)} }
+
+/* ══════════════════════
+   SECTION 2 — TIMELINE
+══════════════════════ */
+#s2 {
+  min-height: 100vh;
+  scroll-snap-align: start;
+  padding: 6rem 2rem;
+  background: linear-gradient(180deg, #0e0906 0%, #160a0c 50%, #0e0906 100%);
+  position: relative;
+  overflow: hidden;
+}
+#s2::before {
+  content:'';position:absolute;left:50%;top:0;bottom:0;width:1px;
+  background: linear-gradient(to bottom, transparent, var(--gold) 10%, var(--gold) 90%, transparent);
+  transform:translateX(-50%);
+  opacity: .3;
+}
+
+.section-label {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: .7rem; letter-spacing:.45em; text-transform:uppercase;
+  color:var(--gold); text-align:center; margin-bottom:.75rem;
+}
+.section-title {
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(2rem,6vw,4rem);font-weight:300;font-style:italic;
+  text-align:center;color:var(--cream);margin-bottom:4rem;
+}
+
+.timeline { max-width:780px;margin:0 auto;display:flex;flex-direction:column;gap:3rem;position:relative;z-index:1; }
+
+.tl-item {
+  display:grid;grid-template-columns:1fr 60px 1fr;align-items:center;gap:1.5rem;
+  opacity:0;transform:translateY(30px);transition:opacity .8s ease,transform .8s ease;
+}
+.tl-item.visible { opacity:1;transform:none; }
+.tl-item:nth-child(even) .tl-content { grid-column:3;text-align:left; }
+.tl-item:nth-child(even) .tl-empty { grid-column:1; }
+.tl-item:nth-child(odd) .tl-content { grid-column:1;text-align:right; }
+.tl-item:nth-child(odd) .tl-empty { grid-column:3; }
+
+.tl-dot {
+  grid-column:2;width:52px;height:52px;
+  background:radial-gradient(circle, var(--gold) 0%, var(--dark-gold) 100%);
+  border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:1.5rem;
+  box-shadow:0 0 0 6px rgba(201,169,110,.1),0 0 30px rgba(201,169,110,.2);
+  justify-self:center;
+}
+.tl-date {
+  font-family:'Josefin Sans',sans-serif;font-size:.65rem;letter-spacing:.3em;
+  text-transform:uppercase;color:var(--gold);margin-bottom:.4rem;
+}
+.tl-heading {
+  font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:400;
+  color:var(--cream);margin-bottom:.4rem;
+}
+.tl-text { font-size:.82rem;line-height:1.8;color:rgba(253,246,238,.55);letter-spacing:.03em; }
+
+/* ══════════════════════
+   SECTION 3 — REASONS
+══════════════════════ */
+#s3 {
+  min-height:100vh;scroll-snap-align:start;
+  padding:6rem 2rem;
+  background:radial-gradient(ellipse at 30% 70%, #1f0710 0%, #0e0906 60%);
+}
+
+.reasons-grid {
+  max-width:900px;margin:3rem auto 0;
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1.5rem;
+}
+.reason-card {
+  background:rgba(253,246,238,.03);
+  border:1px solid rgba(201,169,110,.12);
+  border-radius:4px;padding:2rem 1.8rem;
+  transition:transform .3s,border-color .3s,background .3s;
+  opacity:0;transform:translateY(20px);transition:opacity .7s ease,transform .7s ease,border-color .3s,background .3s;
+}
+.reason-card.visible { opacity:1;transform:none; }
+.reason-card:hover {
+  transform:translateY(-6px)!important;
+  border-color:rgba(201,169,110,.4);
+  background:rgba(201,169,110,.05);
+}
+.reason-num {
+  font-family:'Cinzel',serif;font-size:.7rem;letter-spacing:.3em;
+  color:var(--gold);margin-bottom:1rem;display:block;
+}
+.reason-text {
+  font-family:'Cormorant Garamond',serif;font-size:1.15rem;font-style:italic;
+  line-height:1.7;color:rgba(253,246,238,.85);
+}
+
+/* ══════════════════════
+   SECTION 4 — THE MOMENT
+══════════════════════ */
+#s4 {
+  height:100vh;scroll-snap-align:start;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  position:relative;overflow:hidden;
+  background:radial-gradient(ellipse at 50% 50%, #200510 0%, #0e0906 70%);
+}
+
+.ring-scene {
+  position:relative;margin-bottom:2rem;
+  cursor:pointer;
+  transition:transform .3s;
+}
+.ring-scene:hover { transform:scale(1.05); }
+
+.ring-glow {
+  width:200px;height:200px;border-radius:50%;
+  background:radial-gradient(circle, rgba(201,169,110,.15) 0%, transparent 70%);
+  display:flex;align-items:center;justify-content:center;
+  animation:ringPulse 3s ease-in-out infinite;
+  position:relative;
+}
+@keyframes ringPulse {
+  0%,100%{box-shadow:0 0 40px rgba(201,169,110,.2),0 0 0 0 rgba(201,169,110,.1)}
+  50%{box-shadow:0 0 80px rgba(201,169,110,.4),0 0 0 30px rgba(201,169,110,0)}
+}
+.ring-emoji { font-size:7rem;animation:ringFloat 4s ease-in-out infinite;filter:drop-shadow(0 0 20px rgba(201,169,110,.6)); }
+@keyframes ringFloat { 0%,100%{transform:translateY(0) rotate(-5deg)} 50%{transform:translateY(-16px) rotate(5deg)} }
+
+.the-question {
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(2.5rem,8vw,6rem);
+  font-weight:300;text-align:center;
+  color:var(--cream);line-height:1.1;
+  margin-bottom:1rem;
+}
+.the-question em { color:var(--blush);font-style:italic; }
+
+.question-sub {
+  font-family:'Josefin Sans',sans-serif;
+  font-size:.75rem;letter-spacing:.35em;text-transform:uppercase;
+  color:rgba(201,169,110,.6);text-align:center;margin-bottom:3rem;
+}
+
+.btn-row { display:flex;gap:1.5rem;flex-wrap:wrap;justify-content:center; }
+
+.btn-yes {
+  font-family:'Cinzel',serif;font-size:.85rem;letter-spacing:.25em;
+  text-transform:uppercase;
+  background:linear-gradient(135deg,var(--gold),var(--dark-gold));
+  color:var(--ink);border:none;border-radius:2px;
+  padding:1.1rem 3rem;cursor:pointer;
+  transition:transform .3s,box-shadow .3s;
+  box-shadow:0 6px 30px rgba(201,169,110,.3);
+}
+.btn-yes:hover { transform:translateY(-4px) scale(1.03);box-shadow:0 12px 50px rgba(201,169,110,.5); }
+
+.btn-no {
+  font-family:'Cinzel',serif;font-size:.85rem;letter-spacing:.25em;
+  text-transform:uppercase;
+  background:transparent;color:rgba(253,246,238,.4);
+  border:1px solid rgba(253,246,238,.15);border-radius:2px;
+  padding:1.1rem 2.5rem;cursor:pointer;
+  transition:all .3s;position:relative;
+}
+.btn-no:hover { color:rgba(253,246,238,.6);border-color:rgba(253,246,238,.3); }
+
+/* ══════════════════════
+   SECTION 5 — YES PAGE
+══════════════════════ */
+#s5 {
+  height:100vh;scroll-snap-align:start;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  position:relative;overflow:hidden;
+  background:radial-gradient(ellipse at 50% 50%, #1a0510 0%, #0e0906 70%);
+  opacity:0;transition:opacity 1s ease;
+  pointer-events:none;
+}
+#s5.revealed { opacity:1;pointer-events:all; }
+
+.yes-title {
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(3rem,10vw,8rem);font-weight:300;font-style:italic;
+  color:var(--gold);text-align:center;line-height:1;
+  margin-bottom:1rem;
+  animation:none;
+}
+#s5.revealed .yes-title { animation:celebrateZoom 1s cubic-bezier(.34,1.56,.64,1) forwards; }
+@keyframes celebrateZoom { from{transform:scale(.5);opacity:0} to{transform:scale(1);opacity:1} }
+
+.yes-hearts { font-size:3rem;text-align:center;animation:none;margin:1rem 0; }
+#s5.revealed .yes-hearts { animation:bounceIn 0.8s ease .5s both; }
+@keyframes bounceIn { from{transform:scale(0)} to{transform:scale(1)} }
+
+.yes-message {
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(1.1rem,3vw,1.8rem);font-style:italic;
+  color:rgba(253,246,238,.8);text-align:center;max-width:520px;
+  line-height:1.7;margin:1.5rem auto;
+  opacity:0;
+}
+#s5.revealed .yes-message { animation:fadeUp 1s ease 1.2s forwards; }
+
+.yes-names {
+  font-family:'Cinzel',serif;font-size:.9rem;letter-spacing:.4em;
+  color:var(--gold);text-align:center;margin-top:2rem;
+  opacity:0;
+}
+#s5.revealed .yes-names { animation:fadeUp 1s ease 1.8s forwards; }
+
+/* fireworks canvas */
+#fw-canvas { position:fixed;inset:0;pointer-events:none;z-index:200; }
+
+/* ══════════════════════
+   CUSTOMIZE PANEL
+══════════════════════ */
+
+
+@keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:none} }
+
+/* Photo sections */
+.photo-grid {
+  display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;
+  max-width:600px;margin:2rem auto 0;
+}
+.photo-slot {
+  width:140px;height:140px;border:1px dashed rgba(201,169,110,.25);border-radius:4px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  cursor:pointer;gap:.4rem;color:rgba(201,169,110,.4);font-size:.7rem;
+  letter-spacing:.1em;transition:border-color .2s,background .2s;overflow:hidden;
+}
+.photo-slot:hover { border-color:rgba(201,169,110,.5);background:rgba(201,169,110,.04); }
+.photo-slot input { display:none; }
+.photo-slot img { width:100%;height:100%;object-fit:cover;display:none; }
+
+/* ── TEDDY BEARS ── */
+.teddy-fixed {
+  position:fixed;pointer-events:none;z-index:15;
+  animation:teddySway 4s ease-in-out infinite;
+  filter:drop-shadow(0 8px 20px rgba(0,0,0,.5));
+}
+.teddy-fixed.left  { bottom:0; left:1rem; animation-delay:0s; }
+.teddy-fixed.right { bottom:0; right:1rem; animation-delay:1s; transform:scaleX(-1); }
+@keyframes teddySway {
+  0%,100%{ transform:rotate(-4deg) translateY(0); }
+  50%    { transform:rotate(4deg) translateY(-10px); }
+}
+.teddy-fixed.right { animation-name:teddySwayR; }
+@keyframes teddySwayR {
+  0%,100%{ transform:scaleX(-1) rotate(-4deg) translateY(0); }
+  50%    { transform:scaleX(-1) rotate(4deg) translateY(-10px); }
+}
+
+/* floating teddies in petals layer */
+.teddy-float {
+  position:absolute;top:-120px;
+  animation: petalFall var(--d,12s) linear var(--delay,0s) infinite;
+  filter:drop-shadow(0 4px 8px rgba(0,0,0,.3));
+}
+
+/* teddy on proposal section */
+.teddy-proposal {
+  display:flex;gap:2rem;justify-content:center;align-items:flex-end;
+  margin-bottom:1.5rem;
+}
+.teddy-proposal svg { animation:teddyBounce 2.5s ease-in-out infinite; filter:drop-shadow(0 6px 16px rgba(0,0,0,.4)); }
+.teddy-proposal svg:nth-child(2){ animation-delay:.5s; }
+@keyframes teddyBounce{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-14px) rotate(3deg)}}
+
+/* teddy on yes section */
+.teddy-yes {
+  display:flex;gap:3rem;justify-content:center;margin:1.5rem 0;
+  animation:none;
+}
+#s5.revealed .teddy-yes svg { animation:teddyCelebrate 0.6s cubic-bezier(.34,1.56,.64,1) both; }
+#s5.revealed .teddy-yes svg:nth-child(2){ animation-delay:.3s; }
+@keyframes teddyCelebrate{from{transform:scale(0) rotate(-20deg)}to{transform:scale(1) rotate(0deg)}}
+
+@media(max-width:600px){
+  #s2::before{left:24px;}
+  .tl-item{grid-template-columns:1fr 44px;}
+  .tl-item:nth-child(odd) .tl-content,.tl-item:nth-child(even) .tl-content{grid-column:1;text-align:left;}
+  .tl-item:nth-child(odd) .tl-empty,.tl-item:nth-child(even) .tl-empty{display:none;}
+  .tl-dot{grid-column:2;}
+}
+</style>
+</head>
+<body>
+
+<!-- Cursors -->
+<div class="cur" id="cur1"></div>
+<div class="cur" id="cur2"></div>
+
+<!-- Petals -->
+<div id="petals"></div>
+
+<!-- Fireworks canvas -->
+<canvas id="fw-canvas"></canvas>
+
+<!-- Fixed side teddy bears -->
+<div class="teddy-fixed left">
+  <svg width="90" height="110" viewBox="0 0 90 110" xmlns="http://www.w3.org/2000/svg">
+    <!-- body -->
+    <ellipse cx="45" cy="78" rx="28" ry="30" fill="#c8956c"/>
+    <!-- tummy -->
+    <ellipse cx="45" cy="82" rx="16" ry="18" fill="#e8b898"/>
+    <!-- left arm -->
+    <ellipse cx="14" cy="72" rx="10" ry="7" fill="#c8956c" transform="rotate(-30,14,72)"/>
+    <!-- right arm holding heart -->
+    <ellipse cx="76" cy="72" rx="10" ry="7" fill="#c8956c" transform="rotate(30,76,72)"/>
+    <!-- heart in hand -->
+    <text x="74" y="60" font-size="14" text-anchor="middle">❤️</text>
+    <!-- left leg -->
+    <ellipse cx="32" cy="104" rx="10" ry="8" fill="#c8956c"/>
+    <!-- right leg -->
+    <ellipse cx="58" cy="104" rx="10" ry="8" fill="#c8956c"/>
+    <!-- head -->
+    <circle cx="45" cy="42" r="26" fill="#c8956c"/>
+    <!-- left ear -->
+    <circle cx="22" cy="20" r="10" fill="#c8956c"/>
+    <circle cx="22" cy="20" r="6" fill="#e8b898"/>
+    <!-- right ear -->
+    <circle cx="68" cy="20" r="10" fill="#c8956c"/>
+    <circle cx="68" cy="20" r="6" fill="#e8b898"/>
+    <!-- face -->
+    <ellipse cx="45" cy="46" rx="14" ry="12" fill="#e8b898"/>
+    <!-- eyes -->
+    <circle cx="37" cy="38" r="4" fill="#2a1a0a"/>
+    <circle cx="53" cy="38" r="4" fill="#2a1a0a"/>
+    <circle cx="38.5" cy="36.5" r="1.5" fill="white"/>
+    <circle cx="54.5" cy="36.5" r="1.5" fill="white"/>
+    <!-- nose -->
+    <ellipse cx="45" cy="46" rx="4" ry="3" fill="#a0604a"/>
+    <!-- mouth -->
+    <path d="M39 51 Q45 57 51 51" stroke="#7a4030" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+    <!-- bow -->
+    <path d="M38 62 Q45 66 52 62 Q45 68 38 62Z" fill="#c0596b"/>
+    <circle cx="45" cy="64" r="3" fill="#a0304a"/>
+  </svg>
+</div>
+
+<div class="teddy-fixed right">
+  <svg width="80" height="98" viewBox="0 0 90 110" xmlns="http://www.w3.org/2000/svg">
+    <ellipse cx="45" cy="78" rx="28" ry="30" fill="#b07850"/>
+    <ellipse cx="45" cy="82" rx="16" ry="18" fill="#d9a878"/>
+    <ellipse cx="14" cy="72" rx="10" ry="7" fill="#b07850" transform="rotate(-30,14,72)"/>
+    <ellipse cx="76" cy="72" rx="10" ry="7" fill="#b07850" transform="rotate(30,76,72)"/>
+    <text x="14" y="62" font-size="14" text-anchor="middle">💕</text>
+    <ellipse cx="32" cy="104" rx="10" ry="8" fill="#b07850"/>
+    <ellipse cx="58" cy="104" rx="10" ry="8" fill="#b07850"/>
+    <circle cx="45" cy="42" r="26" fill="#b07850"/>
+    <circle cx="22" cy="20" r="10" fill="#b07850"/>
+    <circle cx="22" cy="20" r="6" fill="#d9a878"/>
+    <circle cx="68" cy="20" r="10" fill="#b07850"/>
+    <circle cx="68" cy="20" r="6" fill="#d9a878"/>
+    <ellipse cx="45" cy="46" rx="14" ry="12" fill="#d9a878"/>
+    <circle cx="37" cy="38" r="4" fill="#2a1a0a"/>
+    <circle cx="53" cy="38" r="4" fill="#2a1a0a"/>
+    <circle cx="38.5" cy="36.5" r="1.5" fill="white"/>
+    <circle cx="54.5" cy="36.5" r="1.5" fill="white"/>
+    <ellipse cx="45" cy="46" rx="4" ry="3" fill="#8a5040"/>
+    <path d="M39 51 Q45 57 51 51" stroke="#6a3028" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+    <path d="M38 62 Q45 66 52 62 Q45 68 38 62Z" fill="#c9a96e"/>
+    <circle cx="45" cy="64" r="3" fill="#9a7440"/>
+  </svg>
+</div>
+
+<!-- ══ S1: TITLE ══ -->
+<section id="s1">
+  <div class="candle-row">
+    <span class="candle">🕯️</span>
+    <span class="candle">🕯️</span>
+    <span class="candle">🕯️</span>
+  </div>
+  <p class="s1-tag">A message from the heart</p>
+  <h1 class="s1-title">
+    <span id="herName">My Love</span>
+    You are my<br>everything
+  </h1>
+  <div class="divider"></div>
+  <p class="s1-sub">Scroll down to discover something beautiful…</p>
+  <div class="scroll-cue">
+    <div class="scroll-arrow"></div>
+    <span>scroll</span>
+  </div>
+</section>
+
+<!-- ══ S2: TIMELINE ══ -->
+<section id="s2">
+  <p class="section-label">Our Story</p>
+  <h2 class="section-title">The moments that led us here</h2>
+
+  <div class="timeline" id="timeline">
+    <div class="tl-item">
+      <div class="tl-content">
+        <p class="tl-date" id="d1">The day we met</p>
+        <h3 class="tl-heading">The First Hello</h3>
+        <p class="tl-text" id="t1">The moment I saw you, something shifted inside me. I didn't know it then, but that was the beginning of my greatest adventure.</p>
+      </div>
+      <div class="tl-dot">🌹</div>
+      <div class="tl-empty"></div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-empty"></div>
+      <div class="tl-dot">✨</div>
+      <div class="tl-content">
+        <p class="tl-date" id="d2">Our first date</p>
+        <h3 class="tl-heading">The First Date</h3>
+        <p class="tl-text" id="t2">I was nervous, you were radiant. Time stood still and I knew — this was someone extraordinary. Someone I never wanted to stop knowing.</p>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-content">
+        <p class="tl-date" id="d3">The moment I knew</p>
+        <h3 class="tl-heading">I Knew It Was You</h3>
+        <p class="tl-text" id="t3">In a quiet, ordinary moment, it hit me. The way you laugh. The way you care. The way you make everything feel like home. It has always been you.</p>
+      </div>
+      <div class="tl-dot">💫</div>
+      <div class="tl-empty"></div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-empty"></div>
+      <div class="tl-dot">💍</div>
+      <div class="tl-content">
+        <p class="tl-date">Today</p>
+        <h3 class="tl-heading">This Moment</h3>
+        <p class="tl-text">And now I stand at the most important moment of my life, ready to ask you the one question that matters most of all.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ S3: REASONS ══ -->
+<section id="s3">
+  <p class="section-label">Why You</p>
+  <h2 class="section-title">Reasons I love you</h2>
+
+  <div class="photo-grid">
+    <div class="photo-slot" onclick="this.querySelector('input').click()">
+      <div class="upload-icon">🖼️</div><span>Add photo</span>
+      <input type="file" accept="image/*" onchange="loadImg(event,this)">
+      <img alt="">
+    </div>
+    <div class="photo-slot" onclick="this.querySelector('input').click()">
+      <div class="upload-icon">🖼️</div><span>Add photo</span>
+      <input type="file" accept="image/*" onchange="loadImg(event,this)">
+      <img alt="">
+    </div>
+    <div class="photo-slot" onclick="this.querySelector('input').click()">
+      <div class="upload-icon">🖼️</div><span>Add photo</span>
+      <input type="file" accept="image/*" onchange="loadImg(event,this)">
+      <img alt="">
+    </div>
+  </div>
+
+  <div class="reasons-grid" id="reasons">
+    <div class="reason-card"><span class="reason-num">01</span><p class="reason-text" id="r1">The way your eyes light up when you talk about the things you love.</p></div>
+    <div class="reason-card"><span class="reason-num">02</span><p class="reason-text" id="r2">Your kindness — the quiet, effortless way you make everyone around you feel seen.</p></div>
+    <div class="reason-card"><span class="reason-num">03</span><p class="reason-text" id="r3">How you make the simplest moments feel like the most beautiful memories.</p></div>
+    <div class="reason-card"><span class="reason-num">04</span><p class="reason-text" id="r4">The way you challenge me to be a better version of myself every single day.</p></div>
+    <div class="reason-card"><span class="reason-num">05</span><p class="reason-text" id="r5">Because when I imagine my future, you are in every single part of it.</p></div>
+    <div class="reason-card"><span class="reason-num">06</span><p class="reason-text" id="r6">Simply because being with you feels like finally coming home.</p></div>
+  </div>
+</section>
+
+<!-- ══ S4: THE QUESTION ══ -->
+<section id="s4">
+  <div class="teddy-proposal">
+    <!-- teddy left -->
+    <svg width="80" height="96" viewBox="0 0 90 110" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="45" cy="78" rx="28" ry="30" fill="#c8956c"/>
+      <ellipse cx="45" cy="82" rx="16" ry="18" fill="#e8b898"/>
+      <ellipse cx="14" cy="72" rx="10" ry="7" fill="#c8956c" transform="rotate(-30,14,72)"/>
+      <ellipse cx="76" cy="68" rx="10" ry="7" fill="#c8956c" transform="rotate(-50,76,68)"/>
+      <text x="82" y="56" font-size="16" text-anchor="middle">💍</text>
+      <ellipse cx="32" cy="104" rx="10" ry="8" fill="#c8956c"/>
+      <ellipse cx="58" cy="104" rx="10" ry="8" fill="#c8956c"/>
+      <circle cx="45" cy="42" r="26" fill="#c8956c"/>
+      <circle cx="22" cy="20" r="10" fill="#c8956c"/><circle cx="22" cy="20" r="6" fill="#e8b898"/>
+      <circle cx="68" cy="20" r="10" fill="#c8956c"/><circle cx="68" cy="20" r="6" fill="#e8b898"/>
+      <ellipse cx="45" cy="46" rx="14" ry="12" fill="#e8b898"/>
+      <circle cx="37" cy="38" r="4" fill="#2a1a0a"/><circle cx="53" cy="38" r="4" fill="#2a1a0a"/>
+      <circle cx="38.5" cy="36.5" r="1.5" fill="white"/><circle cx="54.5" cy="36.5" r="1.5" fill="white"/>
+      <ellipse cx="45" cy="46" rx="4" ry="3" fill="#a0604a"/>
+      <path d="M39 51 Q45 57 51 51" stroke="#7a4030" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+      <path d="M38 62 Q45 66 52 62 Q45 68 38 62Z" fill="#c0596b"/><circle cx="45" cy="64" r="3" fill="#a0304a"/>
+    </svg>
+    <!-- teddy right (bashful, looking away) -->
+    <svg width="80" height="96" viewBox="0 0 90 110" xmlns="http://www.w3.org/2000/svg" style="transform:scaleX(-1)">
+      <ellipse cx="45" cy="78" rx="28" ry="30" fill="#d4a882"/>
+      <ellipse cx="45" cy="82" rx="16" ry="18" fill="#eed8c0"/>
+      <ellipse cx="14" cy="72" rx="10" ry="7" fill="#d4a882" transform="rotate(-30,14,72)"/>
+      <ellipse cx="76" cy="72" rx="10" ry="7" fill="#d4a882" transform="rotate(30,76,72)"/>
+      <ellipse cx="32" cy="104" rx="10" ry="8" fill="#d4a882"/>
+      <ellipse cx="58" cy="104" rx="10" ry="8" fill="#d4a882"/>
+      <circle cx="45" cy="42" r="26" fill="#d4a882"/>
+      <circle cx="22" cy="20" r="10" fill="#d4a882"/><circle cx="22" cy="20" r="6" fill="#eed8c0"/>
+      <circle cx="68" cy="20" r="10" fill="#d4a882"/><circle cx="68" cy="20" r="6" fill="#eed8c0"/>
+      <ellipse cx="45" cy="46" rx="14" ry="12" fill="#eed8c0"/>
+      <!-- blush cheeks -->
+      <ellipse cx="32" cy="44" rx="7" ry="4" fill="rgba(255,150,150,.35)"/>
+      <ellipse cx="58" cy="44" rx="7" ry="4" fill="rgba(255,150,150,.35)"/>
+      <!-- shy eyes (half closed) -->
+      <path d="M33 37 Q37 33 41 37" stroke="#2a1a0a" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      <path d="M49 37 Q53 33 57 37" stroke="#2a1a0a" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      <ellipse cx="45" cy="46" rx="4" ry="3" fill="#b07060"/>
+      <path d="M39 52 Q45 58 51 52" stroke="#8a5040" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+      <path d="M38 62 Q45 66 52 62 Q45 68 38 62Z" fill="#c9a96e"/><circle cx="45" cy="64" r="3" fill="#9a7440"/>
+    </svg>
+  </div>
+
+  <div class="ring-scene" onclick="revealYes()">
+    <div class="ring-glow">
+      <span class="ring-emoji">💍</span>
+    </div>
+  </div>
+
+  <h2 class="the-question"><em id="herName2">My love,</em><br>will you marry me?</h2>
+  <p class="question-sub">Click the ring or choose below</p>
+
+  <div class="btn-row">
+    <button class="btn-yes" onclick="revealYes()">Yes, forever ✦</button>
+    <button class="btn-no" id="noBtn" onmouseover="runNo(this)" onclick="runNo(this)">Maybe later</button>
+  </div>
+</section>
+
+<!-- ══ S5: YES ══ -->
+<section id="s5">
+  <h2 class="yes-title">She said Yes! 💍</h2>
+  <div class="yes-hearts">💖 💕 💖</div>
+  <div class="teddy-yes">
+    <!-- dancing teddy 1 -->
+    <svg width="90" height="110" viewBox="0 0 90 110" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="45" cy="78" rx="28" ry="30" fill="#c8956c"/>
+      <ellipse cx="45" cy="82" rx="16" ry="18" fill="#e8b898"/>
+      <!-- arms up celebrating -->
+      <ellipse cx="10" cy="58" rx="11" ry="7" fill="#c8956c" transform="rotate(-60,10,58)"/>
+      <ellipse cx="80" cy="58" rx="11" ry="7" fill="#c8956c" transform="rotate(60,80,58)"/>
+      <text x="7" y="40" font-size="14">🎉</text>
+      <text x="72" y="40" font-size="14">✨</text>
+      <ellipse cx="32" cy="104" rx="10" ry="8" fill="#c8956c" transform="rotate(-15,32,104)"/>
+      <ellipse cx="58" cy="104" rx="10" ry="8" fill="#c8956c" transform="rotate(15,58,104)"/>
+      <circle cx="45" cy="42" r="26" fill="#c8956c"/>
+      <circle cx="22" cy="20" r="10" fill="#c8956c"/><circle cx="22" cy="20" r="6" fill="#e8b898"/>
+      <circle cx="68" cy="20" r="10" fill="#c8956c"/><circle cx="68" cy="20" r="6" fill="#e8b898"/>
+      <ellipse cx="45" cy="46" rx="14" ry="12" fill="#e8b898"/>
+      <circle cx="37" cy="38" r="4" fill="#2a1a0a"/><circle cx="53" cy="38" r="4" fill="#2a1a0a"/>
+      <circle cx="38.5" cy="36.5" r="1.5" fill="white"/><circle cx="54.5" cy="36.5" r="1.5" fill="white"/>
+      <ellipse cx="45" cy="46" rx="4" ry="3" fill="#a0604a"/>
+      <!-- big smile -->
+      <path d="M36 50 Q45 60 54 50" stroke="#7a4030" stroke-width="2" fill="none" stroke-linecap="round"/>
+      <path d="M38 62 Q45 66 52 62 Q45 68 38 62Z" fill="#c0596b"/><circle cx="45" cy="64" r="3" fill="#a0304a"/>
+    </svg>
+    <!-- dancing teddy 2 -->
+    <svg width="90" height="110" viewBox="0 0 90 110" xmlns="http://www.w3.org/2000/svg" style="transform:scaleX(-1)">
+      <ellipse cx="45" cy="78" rx="28" ry="30" fill="#b07850"/>
+      <ellipse cx="45" cy="82" rx="16" ry="18" fill="#d9a878"/>
+      <ellipse cx="10" cy="58" rx="11" ry="7" fill="#b07850" transform="rotate(-60,10,58)"/>
+      <ellipse cx="80" cy="58" rx="11" ry="7" fill="#b07850" transform="rotate(60,80,58)"/>
+      <text x="7" y="40" font-size="14">💍</text>
+      <text x="72" y="40" font-size="14">💕</text>
+      <ellipse cx="32" cy="104" rx="10" ry="8" fill="#b07850" transform="rotate(15,32,104)"/>
+      <ellipse cx="58" cy="104" rx="10" ry="8" fill="#b07850" transform="rotate(-15,58,104)"/>
+      <circle cx="45" cy="42" r="26" fill="#b07850"/>
+      <circle cx="22" cy="20" r="10" fill="#b07850"/><circle cx="22" cy="20" r="6" fill="#d9a878"/>
+      <circle cx="68" cy="20" r="10" fill="#b07850"/><circle cx="68" cy="20" r="6" fill="#d9a878"/>
+      <ellipse cx="45" cy="46" rx="14" ry="12" fill="#d9a878"/>
+      <circle cx="37" cy="38" r="4" fill="#2a1a0a"/><circle cx="53" cy="38" r="4" fill="#2a1a0a"/>
+      <circle cx="38.5" cy="36.5" r="1.5" fill="white"/><circle cx="54.5" cy="36.5" r="1.5" fill="white"/>
+      <ellipse cx="45" cy="46" rx="4" ry="3" fill="#8a5040"/>
+      <path d="M36 50 Q45 60 54 50" stroke="#6a3028" stroke-width="2" fill="none" stroke-linecap="round"/>
+      <path d="M38 62 Q45 66 52 62 Q45 68 38 62Z" fill="#c9a96e"/><circle cx="45" cy="64" r="3" fill="#9a7440"/>
+    </svg>
+  </div>
+  <p class="yes-message" id="yesMsg">
+    You have made me the happiest person alive.<br>
+    I promise to love you, cherish you, and choose you — every single day, for the rest of my life.
+  </p>
+  <p class="yes-names" id="yesNames">Forever yours ✦</p>
+</section>
+
+
+
+<script>
+// ── CURSOR ──
+const c1=document.getElementById('cur1'),c2=document.getElementById('cur2');
+let mx=0,my=0,cx=0,cy=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;c2.style.left=mx+'px';c2.style.top=my+'px';});
+setInterval(()=>{cx+=(mx-cx)*.12;cy+=(my-cy)*.12;c1.style.left=cx+'px';c1.style.top=cy+'px';},16);
+
+// ── PETALS ──
+const petalEmojis=['🌸','🌺','🌷','❤️','💕','🌹'];
+const petalEl=document.getElementById('petals');
+for(let i=0;i<30;i++){
+  const p=document.createElement('div');p.className='petal';
+  p.textContent=petalEmojis[Math.floor(Math.random()*petalEmojis.length)];
+  const s=.7+Math.random()*1.2;
+  p.style.cssText=`left:${Math.random()*100}%;--s:${s}rem;--d:${6+Math.random()*10}s;--delay:${Math.random()*10}s;--sway:${-40+Math.random()*80}px`;
+  petalEl.appendChild(p);
+}
+
+// ── FLOATING MINI TEDDIES ──
+const teddySVG=`<svg width="40" height="50" viewBox="0 0 90 110" xmlns="http://www.w3.org/2000/svg"><ellipse cx="45" cy="78" rx="28" ry="30" fill="#c8956c"/><ellipse cx="45" cy="82" rx="16" ry="18" fill="#e8b898"/><ellipse cx="14" cy="72" rx="10" ry="7" fill="#c8956c" transform="rotate(-30,14,72)"/><ellipse cx="76" cy="72" rx="10" ry="7" fill="#c8956c" transform="rotate(30,76,72)"/><ellipse cx="32" cy="104" rx="10" ry="8" fill="#c8956c"/><ellipse cx="58" cy="104" rx="10" ry="8" fill="#c8956c"/><circle cx="45" cy="42" r="26" fill="#c8956c"/><circle cx="22" cy="20" r="10" fill="#c8956c"/><circle cx="22" cy="20" r="6" fill="#e8b898"/><circle cx="68" cy="20" r="10" fill="#c8956c"/><circle cx="68" cy="20" r="6" fill="#e8b898"/><ellipse cx="45" cy="46" rx="14" ry="12" fill="#e8b898"/><circle cx="37" cy="38" r="4" fill="#2a1a0a"/><circle cx="53" cy="38" r="4" fill="#2a1a0a"/><ellipse cx="45" cy="46" rx="4" ry="3" fill="#a0604a"/><path d="M39 51 Q45 57 51 51" stroke="#7a4030" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>`;
+for(let i=0;i<6;i++){
+  const t=document.createElement('div');t.className='teddy-float';
+  t.innerHTML=teddySVG;
+  t.style.cssText=`left:${Math.random()*95}%;--d:${14+Math.random()*10}s;--delay:${Math.random()*14}s;--sway:${-60+Math.random()*120}px;opacity:.55`;
+  petalEl.appendChild(t);
+}
+
+// ── SCROLL REVEAL ──
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});
+},{threshold:.2});
+document.querySelectorAll('.tl-item,.reason-card').forEach(el=>obs.observe(el));
+
+// ── NO BUTTON RUNAWAY ──
+function runNo(btn){
+  const vw=window.innerWidth,vh=window.innerHeight;
+  btn.style.position='fixed';
+  btn.style.left=Math.random()*(vw-120)+'px';
+  btn.style.top=Math.random()*(vh-60)+'px';
+  btn.style.transition='left .4s ease,top .4s ease';
+}
+
+// ── YES ──
+function revealYes(){
+  const s5=document.getElementById('s5');
+  s5.classList.add('revealed');
+  s5.scrollIntoView({behavior:'smooth'});
+  launchFireworks();
+  setTimeout(launchFireworks,600);
+  setTimeout(launchFireworks,1200);
+}
+
+// ── FIREWORKS ──
+const canvas=document.getElementById('fw-canvas');
+const ctx=canvas.getContext('2d');
+canvas.width=window.innerWidth;canvas.height=window.innerHeight;
+window.addEventListener('resize',()=>{canvas.width=window.innerWidth;canvas.height=window.innerHeight;});
+
+let particles=[];
+class Particle{
+  constructor(x,y,color){
+    this.x=x;this.y=y;this.color=color;
+    const angle=Math.random()*Math.PI*2;
+    const speed=3+Math.random()*5;
+    this.vx=Math.cos(angle)*speed;this.vy=Math.sin(angle)*speed;
+    this.life=1;this.decay=.015+Math.random()*.02;
+    this.size=2+Math.random()*3;
+  }
+  update(){this.x+=this.vx;this.y+=this.vy;this.vy+=.08;this.life-=this.decay;this.vx*=.98;this.vy*=.98;}
+  draw(){ctx.save();ctx.globalAlpha=this.life;ctx.fillStyle=this.color;ctx.beginPath();ctx.arc(this.x,this.y,this.size,0,Math.PI*2);ctx.fill();ctx.restore();}
+}
+
+function launchFireworks(){
+  const colors=['#c9a96e','#f2c4c4','#ffffff','#c0596b','#ffe4b5'];
+  for(let f=0;f<5;f++){
+    setTimeout(()=>{
+      const x=window.innerWidth*(.2+Math.random()*.6);
+      const y=window.innerHeight*(.1+Math.random()*.4);
+      for(let i=0;i<60;i++) particles.push(new Particle(x,y,colors[Math.floor(Math.random()*colors.length)]));
+    },f*250);
+  }
+}
+
+(function loop(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  particles=particles.filter(p=>{p.update();p.draw();return p.life>0;});
+  requestAnimationFrame(loop);
+})();
+
+// ── PHOTO UPLOAD ──
+function loadImg(e,input){
+  const file=e.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    const img=input.parentElement.querySelector('img');
+    img.src=ev.target.result;img.style.display='block';
+    input.parentElement.querySelector('.upload-icon').style.display='none';
+    input.parentElement.querySelector('span').style.display='none';
+  };
+  reader.readAsDataURL(file);
+}
+
+
+</script>
+</body>
+</html>
